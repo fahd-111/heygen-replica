@@ -7,7 +7,7 @@ import StreamingAvatar, {
   TaskType,
   VoiceEmotion,
 } from "@heygen/streaming-avatar";
-import { Card, CardBody, CardFooter, Chip, Tabs, Tab } from "@heroui/react";
+import { Card, CardBody, CardFooter, Chip } from "@heroui/react";
 import { useEffect, useRef, useState } from "react";
 import { useMemoizedFn, usePrevious } from "ahooks";
 
