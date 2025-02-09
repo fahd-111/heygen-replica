@@ -33,7 +33,7 @@ export default function InteractiveAvatarTextInput({
   }
 
   return (
-    <div className="flex flex-col w-full">
+    <div className="flex flex-col w-full px-2 pb-2">
 
       {label && <label className="mb-2 block text-white">{label}</label>}
       <Input
