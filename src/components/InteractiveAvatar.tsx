@@ -119,10 +119,17 @@ export default function InteractiveAvatar() {
     }
 
     await avatar.current
-      .speak({ text: text, taskType: TaskType.REPEAT, taskMode: TaskMode.SYNC })
+      .speak({ text: text, taskType: TaskType.TALK, taskMode: TaskMode.SYNC })
       .catch((e) => {
         setDebug(e.message);
       });
+
+      // await avatar.current
+      // .speak({ text: text, taskType: TaskType.REPEAT, taskMode: TaskMode.SYNC })
+      // .catch((e) => {
+      //   setDebug(e.message);
+      // });
+
     setIsLoadingRepeat(false);
   }
 
@@ -190,28 +197,19 @@ export default function InteractiveAvatar() {
 
   return (
     <div className="w-full flex flex-col gap-4">
-      <Card
-        className="rounded-lg"
-        style={{
-          backgroundColor: "#18181b",
-        }}
-      >
-        <CardBody className="h-[500px] flex flex-col justify-center items-center">
+      <Card className="rounded-lg" style={{ backgroundColor: "#18181b" }}>
+        <CardBody className="h-[500px] sm:h-[500px] flex flex-col justify-center items-center">
           {stream ? (
-            <div className="h-[500px] w-[900px] justify-center items-center flex rounded-lg overflow-hidden">
+            <div className="w-full h-full flex justify-center items-center rounded-lg overflow-hidden relative">
               <video
                 ref={mediaStream}
                 autoPlay
                 playsInline
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "contain",
-                }}
+                className="w-full h-full object-contain"
               >
                 <track kind="captions" />
               </video>
-              <div className="flex flex-col gap-2 absolute bottom-3 right-3">
+              <div className="absolute bottom-3 right-3 flex flex-col gap-2">
                 <Button
                   className="bg-gradient-to-tr from-indigo-500 to-indigo-300 text-white rounded-lg"
                   size="middle"
@@ -221,7 +219,7 @@ export default function InteractiveAvatar() {
                   Interrupt task
                 </Button>
                 <Button
-                  className="bg-gradient-to-tr from-indigo-500 to-indigo-300  text-white rounded-lg"
+                  className="bg-gradient-to-tr from-indigo-500 to-indigo-300 text-white rounded-lg"
                   size="middle"
                   variant="filled"
                   onClick={endSession}
@@ -231,49 +229,38 @@ export default function InteractiveAvatar() {
               </div>
             </div>
           ) : !isLoadingSession ? (
-            <div className="h-full justify-center items-center flex flex-col gap-8 w-[500px] self-center">
+            <div className="w-full max-w-[500px] flex flex-col gap-8 items-center justify-center mx-auto">
               <div className="flex flex-col gap-3 w-full">
                 <div className="flex flex-col gap-2">
-                  <h3 className="text-white">
-                    {"Custom Knowledge ID(optional)"}
-                  </h3>
+                  <h3 className="text-white">Custom Knowledge ID(optional)</h3>
                   <Input
                     placeholder="Enter a custom knowledge ID"
                     value={knowledgeId}
                     onChange={(e) => setKnowledgeId(e.target.value)}
                   />
                 </div>
-
                 <div className="flex flex-col gap-2">
-                  <h3 className="text-white">{"Custom Avatar ID(optional)"}</h3>
+                  <h3 className="text-white">Custom Avatar ID(optional)</h3>
                   <Input
                     placeholder="Enter a custom avatar ID"
                     value={avatarId}
                     onChange={(e) => setAvatarId(e.target.value)}
                   />
                 </div>
-
                 <Divider orientationMargin="0">or</Divider>
                 <Select
-                  // label="Or select one from these example avatars"
-
                   placeholder="select one from these example avatars"
-                  onChange={(value: string) => {
-                    setAvatarId(value);
-                  }}
+                  onChange={(value: string) => setAvatarId(value)}
                 >
                   {AVATARS.map((avatar) => (
-                    <Select.Option value={avatar.avatar_id}>
+                    <Select.Option key={avatar.avatar_id} value={avatar.avatar_id}>
                       {avatar.name}
                     </Select.Option>
                   ))}
                 </Select>
                 <Select
                   placeholder="Select language"
-                  // className="max-w-xs"
-                  onChange={(value: string) => {
-                    setLanguage(value);
-                  }}
+                  onChange={(value: string) => setLanguage(value)}
                 >
                   {STT_LANGUAGE_LIST.map((lang) => (
                     <Select.Option key={lang.key} value={lang.value}>
@@ -294,9 +281,7 @@ export default function InteractiveAvatar() {
               </Button>
             </div>
           ) : (
-            <Spin
-              indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />}
-            />
+            <Spin indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />} />
           )}
         </CardBody>
         <Divider />
@@ -304,17 +289,14 @@ export default function InteractiveAvatar() {
           <Segmented
             aria-label="Options"
             value={chatMode}
-            onChange={(v) => {
-              handleChangeChatMode(v);
-            }}
+            onChange={(v) => handleChangeChatMode(v)}
             options={[
               { value: "text_mode", label: "Text mode" },
               { value: "voice_mode", label: "Voice mode" },
             ]}
-          ></Segmented>
-
+          />
           {chatMode === "text_mode" ? (
-            <div className="w-full flex flex-row relative">
+            <div className="w-full flex flex-col sm:flex-row relative mt-4">
               <InteractiveAvatarTextInput
                 disabled={!stream}
                 input={text}
@@ -325,11 +307,13 @@ export default function InteractiveAvatar() {
                 onSubmit={handleSpeak}
               />
               {text && (
-                <Chip className="absolute right-16 top-3">Listening</Chip>
+                <Chip className="mt-2 sm:mt-0 sm:absolute sm:right-16 sm:top-3">
+                  Listening
+                </Chip>
               )}
             </div>
           ) : (
-            <div className="w-full text-center">
+            <div className="w-full text-center mt-4">
               <Button
                 disabled={!isUserTalking}
                 className="bg-gradient-to-tr from-indigo-500 to-indigo-300 text-white"
@@ -349,4 +333,5 @@ export default function InteractiveAvatar() {
       </p>
     </div>
   );
+  
 }
