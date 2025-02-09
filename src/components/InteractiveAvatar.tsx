@@ -94,15 +94,11 @@ export default function InteractiveAvatar() {
   
       setData(res);
   
-      // Instead of automatically switching to voice mode,
-      // only start voice chat if the current mode is already voice_mode.
       if (chatMode === "voice_mode") {
         await avatar.current?.startVoiceChat({ useSilencePrompt: false });
       } else {
-        // Otherwise, ensure that any active voice chat is closed.
         avatar.current?.closeVoiceChat();
       }
-      // Do not force setChatMode here—preserve the current mode.
     } catch (error) {
       console.error("Error starting avatar session:", error);
     } finally {
